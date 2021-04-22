@@ -23,7 +23,7 @@ export default class LeftSelection extends Component {
           <Button
             size='large'
             style={{ background: "#fe4a55", color: "#fff", fontWeight: 500 }}>
-            Search Now
+            Search
           </Button>
         </div>
       </div>

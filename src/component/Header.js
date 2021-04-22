@@ -18,17 +18,19 @@ export default class Header extends Component {
           </h1>
         </div>
         <div className='right'>
-          <Button
-            size='large'
-            style={{
-              background: "#fe4a55",
-              color: "#fff",
-              fontWeight: 500,
-              borderColor: "#fe4a55",
-            }}>
-            <LoginOutlined />
-            Login/Register
-          </Button>
+          <Link to='/dashbaord'>
+            <Button
+              size='large'
+              style={{
+                background: "#fe4a55",
+                color: "#fff",
+                fontWeight: 500,
+                borderColor: "#fe4a55",
+              }}>
+              <LoginOutlined />
+              Login/Register
+            </Button>
+          </Link>
         </div>
       </div>
     );
