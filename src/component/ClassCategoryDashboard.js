@@ -3,7 +3,7 @@ import { Card } from "antd";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-export default class StreamDashboard extends Component {
+export default class ClassCategoryDashboard extends Component {
   constructor() {
     super();
     this.state = {
@@ -12,9 +12,8 @@ export default class StreamDashboard extends Component {
   }
   readCategoryHandler = () => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/stream`)
+      .get(`${process.env.REACT_APP_API_URL}/class/category`)
       .then((data) => {
-        console.log(JSON.stringify(data));
         this.setState({
           loading: false,
           data: data.data,
@@ -31,10 +30,9 @@ export default class StreamDashboard extends Component {
   componentDidMount() {
     this.readCategoryHandler();
   }
-
   deleteCategoryHandler = (id) => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/stream/${id}`)
+      .delete(`${process.env.REACT_APP_API_URL}/class/category/${id}`)
       .then((data) => {
         this.readCategoryHandler();
       })
@@ -45,7 +43,6 @@ export default class StreamDashboard extends Component {
         });
       });
   };
-
   render() {
     const { data } = this.state;
     if (!data) {
@@ -53,8 +50,8 @@ export default class StreamDashboard extends Component {
     }
     return (
       <Card
-        title='Stream'
-        extra={<Link to='/create/stream'>Create</Link>}
+        title='Class Category'
+        extra={<Link to='/create/class/category'>Create</Link>}
         className='card'>
         {data.map((item, index) => {
           return (
@@ -63,8 +60,8 @@ export default class StreamDashboard extends Component {
               onClick={() => this.deleteCategoryHandler(item._id)}
               key={index}>
               {item.name} -{" "}
-              {item.subCategory && (
-                <span style={{ color: "gray" }}>{item.subCategory.name}</span>
+              {item.stream && (
+                <span style={{ color: "gray" }}>{item.stream.name}</span>
               )}
             </p>
           );

@@ -60,7 +60,8 @@ export default class SubCategoryDashboard extends Component {
               style={{ cursor: "pointer" }}
               onClick={() => this.deleteCategoryHandler(item._id)}
               key={index}>
-              {item.name}
+              {item.name} -{" "}
+              <span style={{ color: "gray" }}>{item.category.name}</span>
             </p>
           );
         })}

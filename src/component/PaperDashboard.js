@@ -51,6 +51,7 @@ export default class PaperDashboard extends Component {
     if (!data) {
       return <p>Loading...</p>;
     }
+
     return (
       <Card
         title='Paper'
@@ -62,7 +63,26 @@ export default class PaperDashboard extends Component {
               style={{ cursor: "pointer" }}
               onClick={() => this.deleteCategoryHandler(item._id)}
               key={index}>
-              {item.title}
+              {item.title} -{" "}
+              {item.category && (
+                <span style={{ color: "gray" }}>{item.category.name}</span>
+              )}{" "}
+              -{" "}
+              {item.subCategory && (
+                <span style={{ color: "gray" }}>{item.subCategory.name}</span>
+              )}{" "}
+              -{" "}
+              {item.stream && (
+                <span style={{ color: "gray" }}>{item.stream.name}</span>
+              )}{" "}
+              -
+              {item.classCategory && (
+                <span style={{ color: "gray" }}>{item.classCategory.name}</span>
+              )}{" "}
+              -
+              {item.year && (
+                <span style={{ color: "gray" }}>{item.year.year}</span>
+              )}
             </p>
           );
         })}

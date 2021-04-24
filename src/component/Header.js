@@ -18,7 +18,7 @@ export default class Header extends Component {
           </h1>
         </div>
         <div className='right'>
-          <Link to='/dashbaord'>
+          <Link to='/dashboard'>
             <Button
               size='large'
               style={{

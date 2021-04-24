@@ -5,6 +5,7 @@ import SubCategoryDashboard from "../../component/SubCategoryDashboard";
 import PaperDashboard from "../../component/PaperDashboard";
 import YearDashboard from "../../component/YearDashboard";
 import StreamDashboard from "../../component/StreamDashboard";
+import ClassCategoryDashboard from "../../component/ClassCategoryDashboard";
 
 export default class dashboard extends Component {
   render() {
@@ -24,6 +25,7 @@ export default class dashboard extends Component {
           <CategoryDashboard />
           <SubCategoryDashboard />
           <StreamDashboard />
+          <ClassCategoryDashboard />
           <YearDashboard />
           <PaperDashboard />
         </div>

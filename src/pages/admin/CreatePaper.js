@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Input, Select } from "antd";
+import { Button, Input, Radio, Select } from "antd";
 import axios from "axios";
 import "../../style/_form.scss";
 const { TextArea } = Input;
@@ -13,20 +13,65 @@ export default class CreatePaper extends Component {
       description: "",
       pdf_url: "",
       yt_video_url: "",
-      isFeatured: false,
-      isTrend: false,
-      isPopular: false,
       category: null,
       subCategory: null,
       year: null,
       stream: null,
-      loading: false,
+      classCategory: null,
       data: null,
       data_sub_categories: null,
       data_year: null,
       data_stream: null,
+      data_class: null,
+
+      isFeatured: false,
+      isTrend: false,
+      isPopular: false,
+
+      isCollege: false,
+      isCompetetive: false,
+      isSchool: false,
+      isEnglish: false,
+
+      loading: false,
     };
   }
+
+  toggleChangeIsPopular = () => {
+    this.setState({
+      isPopular: !this.state.isPopular,
+    });
+  };
+
+  toggleChangeIsTrend = () => {
+    this.setState({
+      isTrend: !this.state.isTrend,
+    });
+  };
+
+  toggleChangeIsFeatured = () => {
+    this.setState({
+      isFeatured: !this.state.isFeatured,
+    });
+  };
+
+  toggleChangeIsCompetetive = () => {
+    this.setState({
+      isCompetetive: !this.state.isCompetetive,
+    });
+  };
+
+  toggleChangeIsCollege = () => {
+    this.setState({
+      isCollege: !this.state.isCollege,
+    });
+  };
+
+  toggleChangeIsSchool = () => {
+    this.setState({
+      isSchool: !this.state.isSchool,
+    });
+  };
 
   readCategoryHandler = () => {
     axios
@@ -89,8 +134,23 @@ export default class CreatePaper extends Component {
           loading: false,
           data_stream: data.data,
         });
+      })
+      .catch((err) => {
+        console.log(err, "error", err);
+        this.setState({
+          loading: false,
+        });
+      });
+  };
 
-        console.log(data);
+  readClassHandler = (streamId) => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/class/category/${streamId}`)
+      .then((data) => {
+        this.setState({
+          loading: false,
+          data_class: data.data,
+        });
       })
       .catch((err) => {
         console.log(err, "error", err);
@@ -117,6 +177,12 @@ export default class CreatePaper extends Component {
       isTrend,
       category,
       subCategory,
+      isCollege,
+      isCompetetive,
+      isSchool,
+      isEnglish,
+      stream,
+      classCategory,
     } = this.state;
 
     var _object = {
@@ -130,7 +196,18 @@ export default class CreatePaper extends Component {
       isTrend,
       category,
       subCategory,
+      isCollege,
+      isCompetetive,
+      isSchool,
+      isEnglish,
+      stream,
+      classCategory,
     };
+
+    if (!isCollege && !isCompetetive && !isSchool) {
+      return alert("Please one of them College or Competetive or School");
+    }
+
     this.setState({
       loading: true,
     });
@@ -178,8 +255,15 @@ export default class CreatePaper extends Component {
   };
 
   handleSelectChangeForStream = (value) => {
+    this.readClassHandler(value);
     this.setState({
       stream: value,
+    });
+  };
+
+  handleSelectChangeForClass = (value) => {
+    this.setState({
+      classCategory: value,
     });
   };
 
@@ -194,6 +278,7 @@ export default class CreatePaper extends Component {
       data_sub_categories,
       data_year,
       data_stream,
+      data_class,
     } = this.state;
 
     return (
@@ -314,8 +399,87 @@ export default class CreatePaper extends Component {
                     );
                   })}
               </Select>
+
+              <Select
+                size='large'
+                defaultValue='str'
+                style={{ width: "33%", background: "#f2f5fa" }}
+                onChange={this.handleSelectChangeForClass}>
+                <Option value='str'>Class</Option>
+                {data_class &&
+                  data_class.map((item, index) => {
+                    return (
+                      <Option key={index} value={item._id}>
+                        {item.name}
+                      </Option>
+                    );
+                  })}
+              </Select>
             </div>
 
+            {/* special case */}
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "100%",
+              }}>
+              <div className='singleFieldForCheckbox'>
+                <input
+                  type='checkbox'
+                  checked={this.state.isCompetetive}
+                  onChange={this.toggleChangeIsCompetetive}
+                />
+                <p>Compete</p>
+              </div>
+
+              <div className='singleFieldForCheckbox'>
+                <input
+                  type='checkbox'
+                  checked={this.state.isCollege}
+                  onChange={this.toggleChangeIsCollege}
+                />
+                <p>College</p>
+              </div>
+
+              <div className='singleFieldForCheckbox'>
+                <input
+                  type='checkbox'
+                  checked={this.state.isSchool}
+                  onChange={this.toggleChangeIsSchool}
+                />
+                <p>School</p>
+              </div>
+
+              <div className='singleFieldForCheckbox'>
+                <input
+                  type='checkbox'
+                  checked={this.state.isFeatured}
+                  onChange={this.toggleChangeIsFeatured}
+                />
+                <p> Featured</p>
+              </div>
+
+              <div className='singleFieldForCheckbox'>
+                <input
+                  type='checkbox'
+                  checked={this.state.isPopular}
+                  onChange={this.toggleChangeIsPopular}
+                />
+                <p> Popular</p>
+              </div>
+
+              <div className='singleFieldForCheckbox'>
+                <input
+                  type='checkbox'
+                  checked={this.state.isTrend}
+                  onChange={this.toggleChangeIsTrend}
+                />
+                <p> Trend</p>
+              </div>
+            </div>
             <Button
               disabled={!title || loading}
               size='large'

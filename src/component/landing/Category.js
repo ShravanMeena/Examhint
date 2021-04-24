@@ -12,11 +12,22 @@ export default class Category extends Component {
   }
   readCategoryHandler = () => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/category`)
+      .get(`${process.env.REACT_APP_API_URL}/paper`)
       .then((data) => {
+        var arrOfObj = data.data;
+        var setObj = new Set();
+
+        var result = arrOfObj.reduce((acc, item) => {
+          if (!setObj.has(item.category._id)) {
+            setObj.add(item.category._id);
+            acc.push(item);
+          }
+          return acc;
+        }, []);
+
         this.setState({
           loading: false,
-          data: data.data,
+          data: result,
         });
       })
       .catch((err) => {
@@ -36,6 +47,7 @@ export default class Category extends Component {
     if (!data) {
       return <p>Loading...</p>;
     }
+
     return (
       <div className='mainCategory'>
         <h1>
@@ -45,19 +57,29 @@ export default class Category extends Component {
         <div className='mainCatBox'>
           {data.map((item, index) => {
             return (
-              <div
-                className='singleBox'
-                onClick={() =>
-                  this.props.history.push(
-                    `/category/${item._id}`,
-                    JSON.stringify(localStorage.setItem("catId", item._id))
-                  )
-                }>
-                <h5>
-                  <CodeSandboxOutlined />
-                </h5>
-                <p>{item.name}</p>
-              </div>
+              <>
+                {item.category && (
+                  <div
+                    key={index}
+                    className='singleBox'
+                    onClick={() =>
+                      this.props.history.push(
+                        {
+                          pathname: `/category/${item.category._id}`,
+                          category: item.name,
+                        },
+                        JSON.stringify(
+                          localStorage.setItem("catId", item.category._id)
+                        )
+                      )
+                    }>
+                    <h5>
+                      <CodeSandboxOutlined />
+                    </h5>
+                    <p>{item.category.name}</p>
+                  </div>
+                )}
+              </>
             );
           })}
         </div>

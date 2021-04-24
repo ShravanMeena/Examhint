@@ -14,34 +14,27 @@ export default class Home extends Component {
     };
   }
 
-  readSubCategoryHandler = () => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/year`)
-      .then((data) => {
-        this.setState({
-          loading: false,
-          data: data.data,
-        });
-      })
-      .catch((err) => {
-        console.log(err, "error", err);
-        this.setState({
-          loading: false,
-        });
-      });
-  };
-
-  readStreamHandler = () => {
+  checkConditionWithPaper = () => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}/stream/${this.props.match.params.id}`
+        `${process.env.REACT_APP_API_URL}/paper/by/class/category/${this.props.match.params.year}`
       )
       .then((data) => {
+        var arrOfObj = data.data;
+        var setObj = new Set();
+        console.log(arrOfObj);
+        var result = arrOfObj.reduce((acc, item) => {
+          if (!setObj.has(item.year._id)) {
+            setObj.add(item.year._id);
+            acc.push(item);
+          }
+          return acc;
+        }, []);
+
         this.setState({
           loading: false,
-          data_stream: data.data,
+          data: result,
         });
-        console.log(data);
       })
       .catch((err) => {
         console.log(err, "error", err);
@@ -52,52 +45,66 @@ export default class Home extends Component {
   };
 
   componentDidMount() {
-    this.readSubCategoryHandler();
-    this.readStreamHandler();
+    this.checkConditionWithPaper();
   }
 
   render() {
-    const { data, data_stream, show_year } = this.state;
-    if (!data || !data_stream) {
+    const { data } = this.state;
+    if (!data) {
       return <p>Loading...</p>;
     }
     return (
       <div className='mainCategory' style={{ padding: 100 }}>
-        <h1 style={{ fontSize: 40 }}>
-          {data_stream.length > 0 && !show_year ? "Stream" : "Years"}
+        <h1>
+          <span style={{ color: "#fe4a55" }}>
+            {this.props.location.stream_name || "All"}
+          </span>
         </h1>
+        <div className='mainCatBox'>
+          {data.map((item, index) => {
+            return (
+              <>
+                {item.year ? (
+                  <div
+                    key={`${index}+sds`}
+                    className='singleBox'
+                    onClick={() =>
+                      this.props.history.push({
+                        pathname: `/paper/${item.year._id}`,
+                        year: item.year.year,
 
-        {data_stream.length > 0 && !show_year ? (
-          <div className='mainCatBox'>
-            {data_stream.map((s_item, index) => {
-              return (
-                <div
-                  className='singleBox'
-                  onClick={() => this.setState({ show_year: true })}>
-                  <h5>
-                    <CodeSandboxOutlined />
-                  </h5>
-                  <p>{s_item.name}</p>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className='mainCatBox'>
-            {data.map((item, index) => {
-              return (
-                <div
-                  className='singleBox'
-                  onClick={() => this.props.history.push(`/by/${item._id}`)}>
-                  <h5>
-                    <CalendarOutlined />
-                  </h5>
-                  <p>{item.year}</p>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                        category_id: item.category,
+                        sub_category_id: item.subCategory,
+                        stream_id: item.stream,
+                        class_id: item.classCategory,
+                        year_id: item.year._id,
+                      })
+                    }>
+                    <h5>
+                      <CalendarOutlined />
+                    </h5>
+                    <p>{item.year.year}</p>
+                  </div>
+                ) : (
+                  <div
+                    key={`${index}+sds`}
+                    className='singleBox'
+                    onClick={() =>
+                      this.props.history.push({
+                        pathname: `/paper/${item.year._id}`,
+                        year: item.year,
+                      })
+                    }>
+                    <h5>
+                      <CalendarOutlined />
+                    </h5>
+                    <p>All</p>
+                  </div>
+                )}
+              </>
+            );
+          })}
+        </div>
       </div>
     );
   }

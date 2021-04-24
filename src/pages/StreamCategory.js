@@ -1,26 +1,42 @@
 import React, { Component } from "react";
-import { Card } from "antd";
 import axios from "axios";
+import "../style/_category.scss";
+import { CalendarOutlined } from "@ant-design/icons";
+import { Redirect } from "react-router";
 
 export default class StreamCategory extends Component {
   constructor() {
     super();
     this.state = {
       data: null,
+      data_stream: null,
+      show_year: false,
     };
   }
-  readSubCategoryHandler = () => {
+
+  checkConditionWithPaper = () => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}/sub/category/${this.props.match.params.id}`
+        `${process.env.REACT_APP_API_URL}/paper/by/sub/category/${this.props.match.params.id}`
       )
       .then((data) => {
+        var arrOfObj = data.data;
+        var setObj = new Set();
+
+        var result = arrOfObj.reduce((acc, item) => {
+          if (item.stream) {
+            if (!setObj.has(item.stream._id)) {
+              setObj.add(item.stream._id);
+              acc.push(item);
+            }
+          }
+          return acc;
+        }, []);
+
         this.setState({
           loading: false,
-          data: data.data,
+          data: result,
         });
-
-        console.log(data);
       })
       .catch((err) => {
         console.log(err, "error", err);
@@ -31,51 +47,57 @@ export default class StreamCategory extends Component {
   };
 
   componentDidMount() {
-    this.readSubCategoryHandler();
+    this.checkConditionWithPaper();
   }
+  goToCollege = () => {
+    return <Redirect to='/all-years' />;
+  };
 
   render() {
     const { data } = this.state;
     if (!data) {
       return <p>Loading...</p>;
     }
-    return (
-      <div style={{ padding: 50 }}>
-        <h1 style={{ fontSize: 40 }}>Stream Main Category</h1>
+    if (data.length === 0) {
+      return <Redirect to={"/all-years"} />;
+    }
+    console.log(data);
 
-        {!(data.length === 0 || data[0].subCategory === null) ? (
-          <>
-            {data.map((item, index) => {
-              return (
-                <Card style={{ marginTop: 20, backgroundColor: "#f2f5ff" }}>
-                  <p
+    return (
+      <div className='mainCategory' style={{ padding: 100 }}>
+        <h1>
+          <span style={{ color: "#fe4a55" }}>
+            {this.props.location.sub_category || "Stream"}
+          </span>
+        </h1>
+        <div className='mainCatBox'>
+          {data.map((item, index) => {
+            return (
+              <>
+                {item.stream ? (
+                  <div
+                    className='singleBox'
                     onClick={() =>
                       this.props.history.push(
-                        `/sub/category/${item._id}`,
-                        localStorage.setItem("subCat", item._id)
+                        {
+                          pathname: `/class/category/${item.stream._id}`,
+                          stream_name: item.name,
+                        },
+                        localStorage.setItem("streamId", item.stream._id)
                       )
-                    }
-                    style={{ cursor: "pointer" }}
-                    key={index}>
-                    {item.name}
-                  </p>
-                </Card>
-              );
-            })}
-          </>
-        ) : (
-          <Card style={{ marginTop: 20, backgroundColor: "#f2f5ff" }}>
-            <p
-              onClick={() =>
-                this.props.history.push(
-                  `/all-years/${this.props.match.params.id}`
-                )
-              }
-              style={{ cursor: "pointer" }}>
-              All
-            </p>
-          </Card>
-        )}
+                    }>
+                    <h5>
+                      <CalendarOutlined />
+                    </h5>
+                    <p>{item.stream && item.stream.name}</p>
+                  </div>
+                ) : (
+                  <>{this.goToCollege()}</>
+                )}
+              </>
+            );
+          })}
+        </div>
       </div>
     );
   }
