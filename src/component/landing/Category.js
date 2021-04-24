@@ -2,6 +2,7 @@ import { CodeSandboxOutlined } from "@ant-design/icons";
 import React, { Component } from "react";
 import axios from "axios";
 import "../../style/_category.scss";
+import Loader from "../Loader";
 
 export default class Category extends Component {
   constructor() {
@@ -45,7 +46,7 @@ export default class Category extends Component {
   render() {
     const { data } = this.state;
     if (!data) {
-      return <p>Loading...</p>;
+      return <Loader />;
     }
 
     return (

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "../style/_category.scss";
-import { CalendarOutlined } from "@ant-design/icons";
+import { ContainerOutlined } from "@ant-design/icons";
 import { Redirect } from "react-router";
+import Loader from "../component/Loader";
 
 export default class StreamCategory extends Component {
   constructor() {
@@ -56,7 +57,7 @@ export default class StreamCategory extends Component {
   render() {
     const { data } = this.state;
     if (!data) {
-      return <p>Loading...</p>;
+      return <Loader />;
     }
     if (data.length === 0) {
       return <Redirect to={"/all-years"} />;
@@ -87,7 +88,7 @@ export default class StreamCategory extends Component {
                       )
                     }>
                     <h5>
-                      <CalendarOutlined />
+                      <ContainerOutlined />{" "}
                     </h5>
                     <p>{item.stream && item.stream.name}</p>
                   </div>

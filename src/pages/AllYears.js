@@ -3,6 +3,7 @@ import { Card } from "antd";
 import axios from "axios";
 import "../style/_category.scss";
 import { CodeSandboxOutlined, CalendarOutlined } from "@ant-design/icons";
+import Loader from "../component/Loader";
 
 export default class Home extends Component {
   constructor() {
@@ -54,7 +55,7 @@ export default class Home extends Component {
   render() {
     const { data } = this.state;
     if (!data) {
-      return <p>Loading...</p>;
+      return <Loader />;
     }
 
     console.log(data);

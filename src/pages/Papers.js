@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { PaperClipOutlined } from "@ant-design/icons";
+import Loader from "../component/Loader";
 
 export default class Home extends Component {
   constructor() {
@@ -24,8 +25,6 @@ export default class Home extends Component {
       classCategory: class_id,
       stream: stream_id,
     };
-
-    console.log(_object);
 
     if (
       this.props.match.params.year ||
@@ -85,7 +84,7 @@ export default class Home extends Component {
     console.log(this.props.location);
     const { data } = this.state;
     if (!data) {
-      return <p>Loading...</p>;
+      return <Loader />;
     }
     return (
       <div className='mainCategory' style={{ padding: 100 }}>

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "../style/_category.scss";
-import { CodeSandboxOutlined } from "@ant-design/icons";
+import { BookOutlined } from "@ant-design/icons";
+import Loader from "../component/Loader";
 
 export default class SubCategory extends Component {
   constructor() {
@@ -48,7 +49,7 @@ export default class SubCategory extends Component {
   render() {
     const { data } = this.state;
     if (!data) {
-      return <p>Loading...</p>;
+      return <Loader />;
     }
     return (
       <div className='mainCategory' style={{ paddingTop: 100 }}>
@@ -75,7 +76,7 @@ export default class SubCategory extends Component {
                   )
                 }>
                 <h5>
-                  <CodeSandboxOutlined />
+                  <BookOutlined />{" "}
                 </h5>
                 <p>{item.subCategory.name}</p>
               </div>
